@@ -238,7 +238,24 @@
                 console.log(myoptions);
                     var Html = '<div class="row"> <table class="table"> <tr> <th>Type</th> <th>Product Name</th> <th>Reservation Term</th> <th>Monthly Retail Price</th> <th>Region Name</th> </tr>';
                     $.each(myoptions, function (index, item) {
-                    Html += '<tr><td>' + item.type + '</td> <td>Windows</td> <td>' + item.reservationTerm + '</td> <td>$' + item.retailPrice + '</td> <td>' + item.armRegionName + '</td> </tr>';
+                    
+                    if (item.type == "DevTestConsumption") {
+                            item.type = "Consumption";
+                        }
+                        if (item.type == "Consumption") {
+                            reservationterm = "monthly";
+                        }
+                        else { 
+                                reservationterm = item.reservationTerm;
+                        }
+                    if (item.productName.indexOf("Windows") == -1) {
+                        Html += '<tr><td>' + item.type + '</td><td>Linux</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                    }
+                    else {
+                        Html += '<tr><td>' + item.type + '</td><td>Windows</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                    }
+                    //Html += '<tr><td>' + item.type + '</td> <td>Windows</td> <td>' + reservationTerm + '</td> <td>$' + item.retailPrice + '</td> <td>' + item.armRegionName + '</td> </tr>';
+                    
                     });
                     Html += '</table></div>';
                     vmtabledata.html(Html);
@@ -289,9 +306,6 @@
 
         // this is to display table data when available VM is selected....
         $('#selAvVM').change(function () {
-            var selectedVM = $('#selAvVM').val();
-            var selectedResourceGroups = $('#selResource').val();
-            var selectedSubscriptionId = $('#selSubscription').val();
             var selectedAvailableVirtualMachine = $('#selAvVM').val();
 
             var VMTableData = $('#VMTableData');
@@ -310,7 +324,22 @@
                         console.log(myoptions);
                         var Html = '<div class="row"> <table class="table"> <tr> <th>Type</th> <th>Product Name</th> <th>Reservation Term</th> <th>Monthly Retail Price</th> <th>Region Name</th> </tr>';
                         $.each(myoptions, function (index, item) {
-                            Html += '<tr><td>' + item.type + '</td> <td>Windows</td> <td>' + item.reservationTerm + '</td> <td>$' + item.retailPrice + '</td> <td>' + item.armRegionName + '</td> </tr>';
+
+                        if (item.type == "DevTestConsumption") {
+                            item.type = "Consumption";
+                        }
+                        if (item.type == "Consumption") {
+                            reservationterm = "monthly";
+                        }
+                        else {
+                            reservationterm = item.reservationTerm;
+                        }
+                        if (item.productName.indexOf("Windows") == -1) {
+                            Html += '<tr><td>' + item.type + '</td><td>Linux</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                        }
+                        else {
+                            Html += '<tr><td>' + item.type + '</td><td>Windows</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                        }
                         });
                         Html += '</table></div>';
                     VMTableData.html(Html);
