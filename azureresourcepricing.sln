@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "azureresourcepricing", "azureresourcepricing.csproj", "{5B70A7F0-58C9-4297-A6AF-89752C784A54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B70A7F0-58C9-4297-A6AF-89752C784A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B70A7F0-58C9-4297-A6AF-89752C784A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B70A7F0-58C9-4297-A6AF-89752C784A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B70A7F0-58C9-4297-A6AF-89752C784A54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60DED00B-0460-48AE-BC39-7CA1C3A47CF0}
+	EndGlobalSection
+EndGlobal
