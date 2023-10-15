@@ -1,0 +1,276 @@
+{
+	"info": {
+		"_postman_id": "3c5b19f7-4bbd-4ca1-ba7d-ef3827a6a93d",
+		"name": "Personal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "972496"
+	},
+	"item": [
+		{
+			"name": "AzureResources Query",
+			"item": [
+				{
+					"name": "Fetch all Subscription",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions?api-version=2022-12-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2022-12-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Resource By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscription-id}}/resourceGroups/{{RG}}/providers/Microsoft.Compute/virtualMachines/practicevm?api-version=2021-04-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscription-id}}",
+								"resourceGroups",
+								"{{RG}}",
+								"providers",
+								"Microsoft.Compute",
+								"virtualMachines",
+								"practicevm"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2021-04-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Resources from a RG",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscription-id}}/resourceGroups/{{RG}}/resources?$filter=resourceType eq 'Microsoft.Compute/virtualMachines'&api-version=2021-04-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscription-id}}",
+								"resourceGroups",
+								"{{RG}}",
+								"resources"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "resourceType eq 'Microsoft.Compute/virtualMachines'"
+								},
+								{
+									"key": "api-version",
+									"value": "2021-04-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All from RG",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscription-id}}/resourceGroups?api-version=2020-09-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscription-id}}",
+								"resourceGroups"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2020-09-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Prices for a SKU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq 'Standard_B1s' and armRegionName eq 'eastus'",
+							"protocol": "https",
+							"host": [
+								"prices",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"retail",
+								"prices"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "serviceName eq 'Virtual Machines' and armSkuName eq 'Standard_B1s' and armRegionName eq 'eastus'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All VM Sizes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://management.azure.com/subscriptions/{{subscription-id}}/providers/Microsoft.Compute/locations/eastus/vmSizes?api-version=2023-07-01",
+							"protocol": "https",
+							"host": [
+								"management",
+								"azure",
+								"com"
+							],
+							"path": [
+								"subscriptions",
+								"{{subscription-id}}",
+								"providers",
+								"Microsoft.Compute",
+								"locations",
+								"eastus",
+								"vmSizes"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "2023-07-01"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "useBrowser",
+						"value": true,
+						"type": "boolean"
+					},
+					{
+						"key": "scope",
+						"value": "{{scope}}",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "https://localhost:5003",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "{{client-secret}}",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "{{client-id}}",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://login.microsoftonline.com/common/v2.0",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "{{access-Token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

@@ -96,3 +96,5 @@ C:\Users\shubh\Downloads\azureresourcepricing\obj\Debug\net6.0\refint\azureresou
 C:\Users\shubh\Downloads\azureresourcepricing\obj\Debug\net6.0\azureresourcepricing.pdb
 C:\Users\shubh\Downloads\azureresourcepricing\obj\Debug\net6.0\azureresourcepricing.genruntimeconfig.cache
 C:\Users\shubh\Downloads\azureresourcepricing\obj\Debug\net6.0\ref\azureresourcepricing.dll
+C:\Users\shubh\Downloads\azureresourcepricing\bin\Debug\net6.0\AzureResourcePricing.postman_collection.json
+C:\Users\shubh\Downloads\azureresourcepricing\bin\Debug\net6.0\MicrosoftLogin.postman_environment.json

@@ -203,6 +203,49 @@ namespace azureresourcepricing.Controllers
         }
 
 
+        [HttpGet("GetVirtualMachinesTableData")]
+        public VMListData GetVirtualMachinesTableData(string subscriptionId, string resourceGroups, string selectedVirtualMachine)
+        {
+            var access_token = AzureDetails.AccessToken;
+            var TableVMs = GetVirtualMachinesTableData(subscriptionId, resourceGroups, selectedVirtualMachine, access_token);
+            return TableVMs;
+        }
+        public VMListData GetVirtualMachinesTableData(string subscriptionId, string resourceGroups, string selectedVirtualMachine, string access_token)
+        {
+            var httpClient = new HttpClient();
+
+            string URI = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq 'Standard_D2s_v3' and armRegionName eq 'eastus'";
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token);
+
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            try
+            {
+                response = httpClient.GetAsync(URI).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    var TableVMs = JsonConvert.DeserializeObject<VMListData>(responseBody);
+                    return TableVMs;
+
+                }
+                else
+                {
+                    // Handle error cases or return an empty result as needed
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and errors
+                return null;
+            }
+
+        }
+
+
+
         [HttpGet("GetAvailableVirtualMachines")]
         public AvailableVMListResult GetAvailableVirtualMachines(string subscriptionId)
         {
@@ -244,51 +287,6 @@ namespace azureresourcepricing.Controllers
         }
 
 
-
-        [HttpGet("GetVirtualMachinesTableData")]
-        public VMListData GetVirtualMachinesTableData(string subscriptionId, string resourceGroups, string selectedVirtualMachine)
-        {
-            var access_token = AzureDetails.AccessToken;
-            var TableVMs = GetVirtualMachinesTableData(subscriptionId, resourceGroups, selectedVirtualMachine, access_token);
-            return TableVMs;
-        }
-        public VMListData GetVirtualMachinesTableData(string subscriptionId, string resourceGroups, string selectedVirtualMachine, string access_token)
-        {
-            var httpClient = new HttpClient();
-
-            string URI = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq 'Standard_B1s' and armRegionName eq 'eastus'";
-
-            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token);
-
-            HttpResponseMessage response = new HttpResponseMessage();
-
-            try
-            {
-                response = httpClient.GetAsync(URI).Result;
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var responseBody = response.Content.ReadAsStringAsync().Result;
-                    var TableVMs = JsonConvert.DeserializeObject<VMListData>(responseBody);
-                    return TableVMs;
-                    
-                }
-                else
-                {
-                    // Handle error cases or return an empty result as needed
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions and errors
-                return null;
-            }
-
-        }
-
-
-
-
         [HttpGet("GetAvailableVirtualMachinesTableData")]
         public VMListData GetAvailableVirtualMachinesTableData(string selectedAvailableVirtualMachine)
         {
@@ -300,7 +298,7 @@ namespace azureresourcepricing.Controllers
         {
             var httpClient = new HttpClient();
 
-            string URI = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq '"+ selectedAvailableVirtualMachine + "' and armRegionName eq 'eastus'";
+            string URI = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq '" + selectedAvailableVirtualMachine + "' and armRegionName eq 'eastus'";
 
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token);
 
@@ -329,6 +327,117 @@ namespace azureresourcepricing.Controllers
             }
 
         }
+
+
+
+
+
+
+        [HttpGet("GetRecommnededVirtualMachines")]
+        public RecommendedVMListResult GetRecommnededVirtualMachines(string subscriptionId)
+        {
+            var access_token = AzureDetails.AccessToken;
+            var AvVMs = GetRecommnededVirtualMachines(subscriptionId, access_token);
+            if (AvVMs != null)
+            {
+                var filteredVMs = AvVMs.value
+                    .Where(vm => vm.numberOfCores == 2 && vm.maxDataDiskCount == 4 && vm.osDiskSizeInMB == 1047552 && (vm.memoryInMB == 4096 || vm.memoryInMB == 8192 || vm.memoryInMB == 3584 || vm.memoryInMB == 16384) && (vm.resourceDiskSizeInMB == 0 || vm.resourceDiskSizeInMB == 76800 || vm.resourceDiskSizeInMB == 61440 || vm.resourceDiskSizeInMB == 16384 || vm.resourceDiskSizeInMB == 20480))
+                    .ToList();
+
+                var filteredResult = new RecommendedVMListResult
+                {
+                    value = filteredVMs
+                };
+
+                return filteredResult;
+            }
+            else
+            {
+                return null;
+            }
+            //return AvVMs;
+        }
+        public RecommendedVMListResult GetRecommnededVirtualMachines(string subscriptionId, string access_token)
+        {
+            var httpClient = new HttpClient();
+
+            string URI = "https://management.azure.com/subscriptions/" + subscriptionId + "/providers/Microsoft.Compute/locations/eastus/vmSizes?api-version=2023-07-01";
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token);
+
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            try
+            {
+                response = httpClient.GetAsync(URI).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    var AvVMs = JsonConvert.DeserializeObject<RecommendedVMListResult>(responseBody);
+                    return AvVMs;
+                }
+                else
+                {
+                    // Handle error cases or return an empty result as needed
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and errors
+                return null;
+            }
+
+        }
+
+
+
+
+
+        [HttpGet("GetRecommendedVirtualMachinesTableData")]
+        public VMListData GetRecommendedVirtualMachinesTableData(string selectedRecommendedVirtualMachine)
+        {
+            var access_token = AzureDetails.AccessToken;
+            var TableVMs = GetRecommendedVirtualMachinesTableData(selectedRecommendedVirtualMachine, access_token);
+            return TableVMs;
+        }
+        public VMListData GetRecommendedVirtualMachinesTableData(string selectedRecommendedVirtualMachine, string access_token)
+        {
+            var httpClient = new HttpClient();
+
+            string URI = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Virtual Machines' and armSkuName eq '" + selectedRecommendedVirtualMachine + "' and armRegionName eq 'eastus'";
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token);
+
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            try
+            {
+                response = httpClient.GetAsync(URI).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    var TableVMs = JsonConvert.DeserializeObject<VMListData>(responseBody);
+                    return TableVMs;
+
+                }
+                else
+                {
+                    // Handle error cases or return an empty result as needed
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and errors
+                return null;
+            }
+
+        }
+
+
+
+
 
 
         public IActionResult Privacy()
@@ -367,6 +476,37 @@ namespace azureresourcepricing.Controllers
         public string category { get; set; }
         public DateTime endDateTime { get; set; }
     }
+    public class Properties
+    {
+        public string? provisioningState { get; set; }
+        public List<HardwareProfile> hardwareProfile { get; set; }
+        public List<OsProfile> osProfile { get; set; }
+        public List<StorageProfile> storageProfile { get; set; }
+        public string? vmId { get; set; }
+    }
+    public class HardwareProfile
+    {
+        public string vmSize { get; set; }
+    }
+    public class OsProfile
+    {
+        public string adminUsername { get; set; }
+        public string computerName { get; set; }
+    }
+    public class StorageProfile
+    {
+        public List<OsDisk> osDisk { get; set; }
+    }
+    public class OsDisk
+    {
+        public string caching { get; set; }
+        public string createOption { get; set; }
+        public string deleteOption { get; set; }
+        public string name { get; set; }
+        public string diskSizeGB { get; set; }
+        public string osType { get; set; }
+    }
+
 
     public class SubscriptionListResult
     {
@@ -377,30 +517,77 @@ namespace azureresourcepricing.Controllers
     public class ResourceGroupListResult
     {
         public List<ResValue> value { get; set; }
-        public Count count { get; set; }
     }
 
     public class VMListResult
     {
-        public List<ResValue> value { get; set; }
-        public Count count { get; set; }
-    }
-
-    public class VMListData
-    {
-        public string BillingCurrency { get; set; }
-        public string CustomerEntityId { get; set; }
-        public string CustomerEntityType { get; set; }  
-        public List<VMData> Items { get; set; }
-        public string? NextPageLink { get; set; }
-        public int Count { get; set; }
+        public List<vmValue> value { get; set; }
     }
 
     public class AvailableVMListResult
     {
         public List<VMValue> value { get; set; }
-        public Count count { get; set; }
     }
+
+    public class VMValue
+    {
+        public string name { get; set; }
+        public int numberOfCores { get; set; }
+        public int osDiskSizeInMB { get; set; }
+        public int resourceDiskSizeInMB { get; set; }
+        public int memoryInMB { get; set; }
+        public int maxDataDiskCount { get; set; }
+    }
+
+
+    public class RecommendedVMListResult
+    {
+        public List<RecVMValue> value { get; set; }
+    }
+
+    public class RecVMValue
+    {
+        public string name { get; set; }
+        public int numberOfCores { get; set; }
+        public int osDiskSizeInMB { get; set; }
+        public int resourceDiskSizeInMB { get; set; }
+        public int memoryInMB { get; set; }
+        public int maxDataDiskCount { get; set; }
+    }
+
+
+    public class VMListData
+    {
+        public string BillingCurrency { get; set; }
+        public string CustomerEntityId { get; set; }
+        public string CustomerEntityType { get; set; }
+        public List<VMData> Items { get; set; }
+        public string? NextPageLink { get; set; }
+        public int Count { get; set; }
+    }
+
+
+    //public class VMListData
+    //{
+    //    public class skuroot
+    //    {
+    //        public string BillingCurrency { get; set; }
+    //        public string CustomerEntityId { get; set; }
+    //        public string CustomerEntityType { get; set; }
+    //        public List<VMData> Items { get; set; }
+    //        public string? NextPageLink { get; set; }
+    //        public int Count { get; set; }
+    //    }
+    //    public class virtualmachine
+    //    {
+    //        public string id { get; set; }
+    //        public string name { get; set; }
+    //        public string type { get; set; }
+    //        public string location { get; set; }
+    //        public List<Properties> properties { get; set; }
+    //    }
+    //}
+
 
     public class SubscriptionPolicies
     {
@@ -428,17 +615,18 @@ namespace azureresourcepricing.Controllers
         public string name { get; set; }
         public string type  { get; set; }
         public string location { get; set; }
+        public Dictionary<string, string> tags { get; set; }
+        public Properties properties { get; set; }
     }
 
-    public class VMValue
+    public class vmValue
     {
+        public string id { get; set; }
         public string name { get; set; }
-        public int numberOfCores { get; set; }
-        public int osDiskSizeInMB { get; set; }
-        public int resourceDiskSizeInMB { get; set; }
-        public int memoryInMB { get; set; }
-        public int maxDataDiskCount { get; set; }
+        public string type { get; set; }
+        public string location { get; set; }
     }
+
 
     public class VMData
     {
@@ -450,6 +638,7 @@ namespace azureresourcepricing.Controllers
         public string armRegionName { get; set; }
         public string location { get; set; }
         public DateTime effectiveStartDate { get; set; }
+        public DateTime effectiveEndDate { get; set; }
         public string meterId { get; set; }
         public string meterName { get; set; }
         public string productId { get; set; }

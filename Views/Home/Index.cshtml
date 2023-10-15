@@ -41,9 +41,10 @@
 
 
 <div class="row">
+
     <div class="col">
         <div class ="row dropdown d-inline">
-            <h4 class="d-inline">Subscriptions : </h4><div class="dropdown d-inline "><select id="selSubscription"></select></div>
+            <h5 class="d-inline">Subscriptions : </h5><div class="dropdown d-inline "><select id="selSubscription"></select></div>
         </div>
         <div class="spinner-border" id="SubsSpinner" role="status" style="display: none">
             <span class="visually-hidden">Loading...</span>
@@ -52,7 +53,7 @@
         <br />
 
         <div class="row dropdown d-inline">
-            <h4 class="d-inline">Resource Groups : </h4><div class="dropdown d-inline"><select id="selResource"></select></div>
+            <h5 class="d-inline">Resource Groups : </h5><div class="dropdown d-inline"><select id="selResource"></select></div>
         </div>
         <div class="spinner-border" id="ResSpinner" role="status" style="display: none">
             <span class="visually-hidden">Loading...</span>
@@ -61,20 +62,44 @@
         <br />
 
         <div class="row dropdown d-inline">
-            <h4 class="d-inline">Virtual Machines : </h4><div class="dropdown d-inline"><select id="selVM"></select></div>
+            <h5 class="d-inline">Virtual Machines : </h5><div class="dropdown d-inline"><select id="selVM"></select></div>
         </div>
         <div class="spinner-border" id="VMSpinner" role="status" style="display: none">
             <span class="visually-hidden">Loading...</span>
         </div>
+        <br />
+        <br />
 
-        <div class="row" style="margin:2%">
+        <div class="row">
             <div class="col" id="vmtabledata"></div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col"><h3>Utilization</h3></div>
+        </div>
+
+    </div>
+
+    <div class="col">
+        <div class="dropdown d-inline">
+            <h5 class="d-inline">Recommended virtual Machines : </h5><div class="dropdown d-inline"><select id="selRecVM"></select></div>
+        </div>
+
+        <div class="spinner-border" id="RecVMSpinner" role="status" style="display: none">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        
+        <div>
+            <div class="row" style="margin:2%">
+                <div class="col" id="RecVMTableData"></div>
+            </div>
         </div>
     </div>
 
     <div class="col">
         <div class="dropdown d-inline">
-            <h4 class="d-inline">Available virtual Machines for Camparison : </h4><div class="dropdown d-inline"><select id="selAvVM"></select></div>
+            <h5 class="d-inline">Available virtual Machines for Camparison : </h5><div class="dropdown d-inline"><select id="selAvVM"></select></div>
         </div>
 
         <div class="spinner-border" id="AvVMSpinner" role="status" style="display: none">
@@ -84,8 +109,8 @@
         <div class="row" style="margin:2%">
             <div class="col" id="VMTableData"></div>
         </div>
-
     </div>
+
 </div>
 
 
@@ -143,9 +168,10 @@
                     data: { subscriptionId: selectedSubscriptionId },
                     type: "GET"
                 }).done(function (response) {
-                    var resourceGroupOptions = response.value;
+                    console.log(response);
+                var resourceGroupOptions = response.value;
+                    //console.log(resourceGroupOptions);
                     var resourceGroupSelect = $('#selResource');
-                    console.log(resourceGroupOptions);
                     resourceGroupSelect.empty(); // Clear existing options
                     resourceGroupSelect.append('<option value="">Select Resource Group</option>');
 
@@ -183,9 +209,10 @@
                     type: "GET"
                 }).done(function (response) {
                     if (response) {
+                        console.log(response);
                         var VMOptions = response.value;
                         var VMSelect = $('#selVM');
-                        console.log(VMOptions);
+                        //console.log(VMOptions);
                         VMSelect.empty(); // Clear existing options
                         VMSelect.append('<option value="">Select Virtual Machine</option>');
 
@@ -224,9 +251,13 @@
             var selectedResourceGroups = $('#selResource').val();
             var selectedSubscriptionId = $('#selSubscription').val();
             var selectedVirtualMachine = $('#selVM').val();
-            
+
+            var vmUserDescriptiontabledata = $('#vmUserDescriptiontabledata');
+            vmUserDescriptiontabledata.html('');
+
             var vmtabledata = $('#vmtabledata');
             vmtabledata.html('');
+
 
             $.ajax({
                 url: '@Url.Action("GetVirtualMachinesTableData", "Home")',
@@ -235,7 +266,7 @@
             }).done(function (response) {
                 console.log(response);
                     var myoptions = response.items;
-                console.log(myoptions);
+                //console.log(myoptions);
                     var Html = '<div class="row"> <table class="table"> <tr> <th>Type</th> <th>Product Name</th> <th>Reservation Term</th> <th>Monthly Retail Price</th> <th>Region Name</th> </tr>';
                     $.each(myoptions, function (index, item) {
                     
@@ -259,6 +290,7 @@
                     });
                     Html += '</table></div>';
                     vmtabledata.html(Html);
+
 
                 $('#VMSpinner').hide();
                 console.log("Done");
@@ -321,7 +353,7 @@
                     {
                         console.log(response);
                         var myoptions = response.items;
-                        console.log(myoptions);
+                        //console.log(myoptions);
                         var Html = '<div class="row"> <table class="table"> <tr> <th>Type</th> <th>Product Name</th> <th>Reservation Term</th> <th>Monthly Retail Price</th> <th>Region Name</th> </tr>';
                         $.each(myoptions, function (index, item) {
 
@@ -350,6 +382,89 @@
                     }
                 });
         });
+
+
+
+        //this is to populate dropdown with Recommended Virtual Machine when subscriptionId is selected...
+        $('#selVM').change(function () {
+           $('#RecVMSpinner').show();
+            var selectedSubscriptionId = $('#selSubscription').val();
+
+            $.ajax({
+                url: '@Url.Action("GetRecommnededVirtualMachines", "Home")',
+                data: { subscriptionId: selectedSubscriptionId },
+                type: "GET"
+            }).done(function (response) {
+                if (response) {
+                    var VMOptions = response.value;
+                    console.log(VMOptions);
+
+                    var VMSelect = $('#selRecVM');
+                    VMSelect.empty();
+                    VMSelect.append('<option value="">Select</option>');
+
+                    $.each(VMOptions, function (index, availableVM) {
+                        VMSelect.append($('<option></option>').val(availableVM.name).html(availableVM.name));
+                    });
+
+                }
+                else {
+                    console.error("Invalid server response:", response);
+                    alert("Invalid server response. Please try again later.");
+                }
+
+                $('#RecVMSpinner').hide();
+                console.log("Done");
+            });
+        });
+
+
+
+        // this is to display table data when Recommended VM is selected....
+        $('#selRecVM').change(function () {
+            var selectedRecommendedVirtualMachine = $('#selRecVM').val();
+
+            var RecVMTableData = $('#RecVMTableData');
+            RecVMTableData.html('');
+
+            $.ajax({
+                url: '@Url.Action("GetRecommendedVirtualMachinesTableData", "Home")',
+                data: { selectedRecommendedVirtualMachine: selectedRecommendedVirtualMachine },
+                type: 'GET'
+            }).done(function (response) {
+                if (response) {
+                    console.log(response);
+                    var myoptions = response.items;
+                    //console.log(myoptions);
+                    var Html = '<div class="row"> <table class="table"> <tr> <th>Type</th> <th>Product Name</th> <th>Reservation Term</th> <th>Monthly Retail Price</th> <th>Region Name</th> </tr>';
+                    $.each(myoptions, function (index, item) {
+
+                        if (item.type == "DevTestConsumption") {
+                            item.type = "Consumption";
+                        }
+                        if (item.type == "Consumption") {
+                            reservationterm = "monthly";
+                        }
+                        else {
+                            reservationterm = item.reservationTerm;
+                        }
+                        if (item.productName.indexOf("Windows") == -1) {
+                            Html += '<tr><td>' + item.type + '</td><td>Linux</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                        }
+                        else {
+                            Html += '<tr><td>' + item.type + '</td><td>Windows</td><td>' + reservationterm + ' </td><td>$' + item.retailPrice + '</td><td>' + item.armRegionName + ' </td></tr> ';
+                        }
+                    });
+                    Html += '</table></div>';
+                    RecVMTableData.html(Html);
+                }
+                else {
+                    console.error("Error fetching VM data.");
+                    alert("Error fetching VM data. Please try again later.");
+                }
+            });
+        });
+
 
     });
 
